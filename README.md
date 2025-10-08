@@ -7,7 +7,7 @@ It enables individuals and businesses to build financial credibility through con
 
 ## 🚀 Live Links
 
-- **Frontend (Deployed App):** [https://trusthub.vercel.app](https://trusthub.vercel.app)
+- **Frontend (Deployed App):** [https://trusthub-six.vercel.app](https://trusthub-six.vercel.app)
 - **Backend API:** [https://trusthub-api.azurewebsites.net/api](https://trusthub-api.azurewebsites.net/api) *(if applicable)*
 - **Demo Video (Loom):** [https://www.loom.com/share/your-demo-link](https://www.loom.com/share/your-demo-link)
 

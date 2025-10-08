@@ -47,7 +47,7 @@ export default function LandingPage() {
 
             <div className="flex flex-col sm:flex-row items-start gap-3 md:gap-4 mb-6 md:mb-8">
               <Button asChild size="lg" className="gap-2 w-full sm:w-auto">
-                <Link href="/connect">
+                <Link href="/signin">
                   <Shield className="w-4 h-4" />
                   Connect Your Accounts
                 </Link>

@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Shield, Loader2 } from "lucide-react"
 
+
 interface ConnectAccountDialogProps {
   bank: {
     id: string
@@ -45,7 +46,12 @@ export function ConnectAccountDialog({ bank, onClose, onConnect }: ConnectAccoun
           <>
             <DialogHeader>
               <div className="flex items-center gap-3 mb-2">
-                <span className="text-3xl">{bank.logo}</span>
+                <img
+  src={bank.logo}
+  alt={`${bank.name} logo`}
+  className="w-8 h-8 rounded-md object-contain"
+/>
+
                 <DialogTitle>Connect to {bank.name}</DialogTitle>
               </div>
               <DialogDescription>TrustHub will securely access your account information</DialogDescription>
@@ -89,7 +95,12 @@ export function ConnectAccountDialog({ bank, onClose, onConnect }: ConnectAccoun
           <>
             <DialogHeader>
               <div className="flex items-center gap-3 mb-2">
-                <span className="text-3xl">{bank.logo}</span>
+                <img
+  src={bank.logo}
+  alt={`${bank.name} logo`}
+  className="w-8 h-8 rounded-md object-contain"
+/>
+
                 <DialogTitle>Sign in to {bank.name}</DialogTitle>
               </div>
               <DialogDescription>Enter your credentials to authorize the connection</DialogDescription>

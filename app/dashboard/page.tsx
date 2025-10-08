@@ -63,7 +63,12 @@ export default function DashboardPage() {
               {connectedBanks.map((bank) => (
                 <div key={bank.id} className="flex items-center justify-between p-4 rounded-lg bg-muted">
                   <div className="flex items-center gap-3">
-                    <span className="text-2xl">{bank.logo}</span>
+                    <img
+  src={bank.logo}
+  alt={`${bank.name} logo`}
+  className="w-8 h-8 rounded-md object-contain"
+/>
+
                     <div>
                       <p className="font-medium text-sm">{bank.name}</p>
                       <p className="text-xs text-muted-foreground">₦{bank.balance.toLocaleString()}</p>

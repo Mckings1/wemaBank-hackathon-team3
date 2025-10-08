@@ -2,6 +2,7 @@
 
 import { useState } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Shield, Check, ArrowLeft, Plus } from "lucide-react"
@@ -9,12 +10,12 @@ import { ConnectAccountDialog } from "@/components/connect-account-dialog"
 import { useAuth } from "@/lib/auth-context"
 
 const availableBanks = [
-  { id: "wema", name: "Wema Bank", logo: "🏦", balance: 1250000 },
-  { id: "kuda", name: "Kuda Bank", logo: "💜", balance: 850000 },
-  { id: "opay", name: "OPay", logo: "💚", balance: 450000 },
-  { id: "piggyvest", name: "Piggyvest", logo: "🐷", balance: 297500 },
-  { id: "alat", name: "ALAT by Wema", logo: "🔷", balance: 0 },
-  { id: "gtbank", name: "GTBank", logo: "🟠", balance: 0 },
+  { id: "wema", name: "Wema Bank", logo: "/logos/wema.png", balance: 1250000 },
+  { id: "kuda", name: "Kuda Bank", logo: "/logos/kuda.png", balance: 850000 },
+  { id: "opay", name: "OPay", logo: "/logos/opay.png", balance: 450000 },
+  { id: "piggyvest", name: "Piggyvest", logo: "/logos/piggy.png", balance: 297500 },
+  { id: "alat", name: "ALAT by Wema", logo: "/logos/alat.png", balance: 0 },
+  { id: "gtbank", name: "GTBank", logo: "/logos/gtbank.png", balance: 0 },
 ]
 
 export default function ConnectPage() {
@@ -23,9 +24,7 @@ export default function ConnectPage() {
 
   const handleConnect = (bankId: string) => {
     const bank = availableBanks.find((b) => b.id === bankId)
-    if (bank) {
-      setSelectedBank(bank)
-    }
+    if (bank) setSelectedBank(bank)
   }
 
   const handleConnectionComplete = (bankId: string) => {
@@ -46,7 +45,8 @@ export default function ConnectPage() {
     disconnectBank(bankId)
   }
 
-  const isConnected = (bankId: string) => connectedBanks.some((b) => b.id === bankId)
+  const isConnected = (bankId: string) =>
+    connectedBanks.some((b) => b.id === bankId)
 
   return (
     <div className="min-h-screen bg-background">
@@ -68,14 +68,20 @@ export default function ConnectPage() {
         </div>
       </header>
 
+      {/* Main Section */}
       <div className="container mx-auto px-4 py-12 max-w-4xl">
         <div className="text-center mb-12">
-          <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">Connect Your Accounts</h1>
-          <p className="text-lg text-muted-foreground">Securely link your banks and financial apps to get started</p>
+          <h1 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+            Connect Your Accounts
+          </h1>
+          <p className="text-lg text-muted-foreground">
+            Securely link your banks and financial apps to get started
+          </p>
           {connectedBanks.length > 0 && (
             <p className="text-sm text-success mt-2">
               <Check className="w-4 h-4 inline mr-1" />
-              {connectedBanks.length} account{connectedBanks.length > 1 ? "s" : ""} connected
+              {connectedBanks.length} account
+              {connectedBanks.length > 1 ? "s" : ""} connected
             </p>
           )}
         </div>
@@ -85,9 +91,12 @@ export default function ConnectPage() {
           <div className="flex items-start gap-3">
             <Shield className="w-5 h-5 text-success mt-0.5" />
             <div>
-              <p className="text-sm font-medium text-foreground">Bank-grade encryption</p>
+              <p className="text-sm font-medium text-foreground">
+                Bank-grade encryption
+              </p>
               <p className="text-sm text-muted-foreground">
-                Your credentials are never stored. You stay in control and can revoke access anytime.
+                Your credentials are never stored. You stay in control and can
+                revoke access anytime.
               </p>
             </div>
           </div>
@@ -101,9 +110,17 @@ export default function ConnectPage() {
               <Card key={bank.id} className="p-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
-                    <div className="text-4xl">{bank.logo}</div>
+                    <Image
+                      src={bank.logo}
+                      alt={bank.name}
+                      width={48}
+                      height={48}
+                      className="rounded-md"
+                    />
                     <div>
-                      <h3 className="font-semibold text-card-foreground">{bank.name}</h3>
+                      <h3 className="font-semibold text-card-foreground">
+                        {bank.name}
+                      </h3>
                       {connected && (
                         <div className="flex items-center gap-1 text-success text-sm mt-1">
                           <Check className="w-4 h-4" />
@@ -122,7 +139,11 @@ export default function ConnectPage() {
                       Revoke
                     </Button>
                   ) : (
-                    <Button onClick={() => handleConnect(bank.id)} variant="default" size="sm">
+                    <Button
+                      onClick={() => handleConnect(bank.id)}
+                      variant="default"
+                      size="sm"
+                    >
                       Connect
                     </Button>
                   )}
@@ -131,13 +152,18 @@ export default function ConnectPage() {
             )
           })}
 
+          {/* Add another bank card */}
           <Card className="p-6 border-dashed">
             <div className="flex flex-col items-center justify-center gap-3 py-4">
               <div className="w-12 h-12 bg-muted rounded-full flex items-center justify-center">
                 <Plus className="w-6 h-6 text-muted-foreground" />
               </div>
-              <p className="text-sm font-medium text-muted-foreground">Add Another Bank</p>
-              <p className="text-xs text-muted-foreground text-center">50+ more banks available</p>
+              <p className="text-sm font-medium text-muted-foreground">
+                Add Another Bank
+              </p>
+              <p className="text-xs text-muted-foreground text-center">
+                50+ more banks available
+              </p>
             </div>
           </Card>
         </div>
