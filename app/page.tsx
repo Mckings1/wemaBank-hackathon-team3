@@ -1,8 +1,13 @@
+"use client"
+
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Shield, Lightbulb, Lock, Check, Play, CreditCard, Star } from "lucide-react"
+import { useState } from "react"
 
 export default function LandingPage() {
+  const [showDemo, setShowDemo] = useState(false)
+
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-white sticky top-0 z-50">
@@ -52,11 +57,43 @@ export default function LandingPage() {
                   Connect Your Accounts
                 </Link>
               </Button>
-              <Button variant="outline" size="lg" className="gap-2 bg-white w-full sm:w-auto">
+
+              <Button
+                variant="outline"
+                size="lg"
+                className="gap-2 bg-white w-full sm:w-auto"
+                onClick={() => setShowDemo(true)}
+              >
                 <Play className="w-4 h-4" />
                 Watch Demo
               </Button>
             </div>
+
+            {/* Demo Modal */}
+            {showDemo && (
+              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+                <div className="bg-white rounded-xl shadow-xl p-6 max-w-lg w-full relative">
+                  <button
+                    className="absolute top-2 right-2 text-muted-foreground"
+                    onClick={() => setShowDemo(false)}
+                  >
+                    ✕
+                  </button>
+                  <div className="aspect-video mb-4">
+                    <iframe
+                      width="100%"
+                      height="100%"
+                      src="https://www.loom.com/embed/62e4da1fc0c84306b32eee97d9b946d9" 
+                      title="Demo Video"
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  </div>
+                  <p className="text-center text-muted-foreground">TrustHub Demo</p>
+                </div>
+              </div>
+            )}
 
             <div className="flex flex-wrap items-center gap-4 md:gap-6 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
@@ -247,7 +284,7 @@ export default function LandingPage() {
               </p>
 
               <Button asChild className="w-full" size="lg">
-                <Link href="/trust-score">View Detailed Report</Link>
+                <Link href="/signin">View Detailed Report</Link>
               </Button>
             </div>
           </div>
@@ -319,7 +356,7 @@ export default function LandingPage() {
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4">
             <Button asChild size="lg" className="gap-2 w-full sm:w-auto">
-              <Link href="/connect">
+              <Link href="/signin">
                 <Shield className="w-4 h-4" />
                 Get Started Free
               </Link>

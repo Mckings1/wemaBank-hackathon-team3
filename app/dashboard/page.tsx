@@ -42,9 +42,9 @@ export default function DashboardPage() {
             </div>
           </Card>
 
-          <Card className="p-6 bg-warning/10 border-warning/30">
+          <Card className="p-6 bg-success/10 border-success/30">
             <h3 className="text-sm font-medium text-muted-foreground mb-2">Trust Score</h3>
-            <p className="text-4xl font-bold text-foreground mb-2">87/100</p>
+            <p className="text-4xl font-bold text-foreground mb-2">93/100</p>
             <Button asChild variant="outline" size="sm" className="w-full bg-transparent">
               <Link href="/trust-score">View Details</Link>
             </Button>

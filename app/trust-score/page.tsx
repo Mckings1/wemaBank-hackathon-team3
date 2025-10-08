@@ -44,7 +44,7 @@ export default function TrustScorePage() {
         <div className="grid lg:grid-cols-2 gap-8 mb-8">
           {/* Score Display */}
           <Card className="p-8">
-            <TrustScoreGauge score={87} />
+            <TrustScoreGauge score={93} />
             <div className="text-center mt-6">
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-success/10 rounded-full">
                 <TrendingUp className="w-4 h-4 text-success" />
