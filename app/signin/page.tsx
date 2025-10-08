@@ -23,7 +23,7 @@ export default function SignInPage() {
       setTimeout(() => {
         signIn(identifier)
         setIsLoading(false)
-      }, 1000)
+      }, 2000)
     }
   }
 
@@ -52,7 +52,7 @@ export default function SignInPage() {
               <Lock className="w-8 h-8 text-primary" />
             </div>
             <h1 className="text-3xl font-bold text-foreground mb-2">Welcome to TrustHub</h1>
-            <p className="text-muted-foreground">Sign in with your BVN or NIN to get started</p>
+            <p className="text-muted-foreground">Register with your BVN or NIN to get started</p>
           </div>
 
           <Card className="p-6 md:p-8">

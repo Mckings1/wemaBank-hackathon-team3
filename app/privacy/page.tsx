@@ -129,7 +129,12 @@ export default function PrivacyPage() {
                 <Card key={bank.id} className="p-6">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                      <span className="text-3xl">{bank.logo}</span>
+                      <img
+  src={bank.logo}
+  alt={`${bank.name} logo`}
+  className="w-8 h-8 rounded-md object-contain"
+/>
+
                       <div>
                         <h3 className="font-semibold text-card-foreground">{bank.name}</h3>
                         <p className="text-sm text-muted-foreground">Connected • Last sync: {bank.lastTransaction}</p>
