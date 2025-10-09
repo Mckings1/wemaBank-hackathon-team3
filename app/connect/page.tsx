@@ -5,10 +5,19 @@ import Link from "next/link"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Shield, Check, ArrowLeft, Plus } from "lucide-react"
+import { Input } from "@/components/ui/input"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
+import { Shield, Check, ArrowLeft, Plus, Search } from "lucide-react"
 import { ConnectAccountDialog } from "@/components/connect-account-dialog"
 import { useAuth } from "@/lib/auth-context"
 
+//
 const availableBanks = [
   { id: "wema", name: "Wema Bank", logo: "/logos/wema.png", balance: 1250000 },
   { id: "kuda", name: "Kuda Bank", logo: "/logos/kuda.png", balance: 850000 },
@@ -16,11 +25,27 @@ const availableBanks = [
   { id: "piggyvest", name: "Piggyvest", logo: "/logos/piggy.png", balance: 297500 },
   { id: "alat", name: "ALAT by Wema", logo: "/logos/alat.png", balance: 0 },
   { id: "gtbank", name: "GTBank", logo: "/logos/gtbank.png", balance: 0 },
+  { id: "access", name: "Access Bank", logo: "🔶", balance: 0 },
+  { id: "zenith", name: "Zenith Bank", logo: "🔴", balance: 0 },
+  { id: "uba", name: "UBA", logo: "🔵", balance: 0 },
+  { id: "firstbank", name: "First Bank", logo: "🟦", balance: 0 },
+  { id: "fidelity", name: "Fidelity Bank", logo: "🟢", balance: 0 },
+  { id: "stanbic", name: "Stanbic IBTC", logo: "⚪", balance: 0 },
+  { id: "sterling", name: "Sterling Bank", logo: "🔷", balance: 0 },
+  { id: "union", name: "Union Bank", logo: "🟡", balance: 0 },
+  { id: "fcmb", name: "FCMB", logo: "🟣", balance: 0 },
+  { id: "ecobank", name: "Ecobank", logo: "🔴", balance: 0 },
+  { id: "polaris", name: "Polaris Bank", logo: "🟠", balance: 0 },
+  { id: "providus", name: "Providus Bank", logo: "🟢", balance: 0 },
+  { id: "carbon", name: "Carbon", logo: "⚫", balance: 0 },
+  { id: "vfd", name: "VFD Microfinance Bank", logo: "🔵", balance: 0 },
 ]
 
 export default function ConnectPage() {
   const { connectedBanks, connectBank, disconnectBank } = useAuth()
-  const [selectedBank, setSelectedBank] = useState<(typeof availableBanks)[0] | null>(null)
+  const [selectedBank, setSelectedBank] = useState<(typeof availableBanks)[number] | null>(null)
+  const [showAllBanks, setShowAllBanks] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("")
 
   const handleConnect = (bankId: string) => {
     const bank = availableBanks.find((b) => b.id === bankId)
@@ -46,7 +71,14 @@ export default function ConnectPage() {
   }
 
   const isConnected = (bankId: string) =>
-    connectedBanks.some((b) => b.id === bankId)
+    connectedBanks?.some((b) => b.id === bankId)
+
+  const filteredBanks = availableBanks.filter((bank) =>
+    bank.name.toLowerCase().includes(searchQuery.toLowerCase())
+  )
+
+  // ✅ Correctly use filtered list in all-banks dialog
+  const displayedBanks = availableBanks.slice(0, 6)
 
   return (
     <div className="min-h-screen bg-background">
@@ -77,8 +109,9 @@ export default function ConnectPage() {
           <p className="text-lg text-muted-foreground">
             Securely link your banks and financial apps to get started
           </p>
-          {connectedBanks.length > 0 && (
-            <p className="text-sm text-success mt-2">
+
+          {connectedBanks?.length > 0 && (
+            <p className="text-sm text-success mt-2 flex items-center justify-center">
               <Check className="w-4 h-4 inline mr-1" />
               {connectedBanks.length} account
               {connectedBanks.length > 1 ? "s" : ""} connected
@@ -95,8 +128,7 @@ export default function ConnectPage() {
                 Bank-grade encryption
               </p>
               <p className="text-sm text-muted-foreground">
-                Your credentials are never stored. You stay in control and can
-                revoke access anytime.
+                Your credentials are never stored. You stay in control and can revoke access anytime.
               </p>
             </div>
           </div>
@@ -104,23 +136,26 @@ export default function ConnectPage() {
 
         {/* Banks Grid */}
         <div className="grid md:grid-cols-2 gap-4 mb-8">
-          {availableBanks.map((bank) => {
+          {displayedBanks.map((bank) => {
             const connected = isConnected(bank.id)
             return (
               <Card key={bank.id} className="p-6">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
-                    <Image
-                      src={bank.logo}
-                      alt={bank.name}
-                      width={48}
-                      height={48}
-                      className="rounded-md"
-                    />
+                    {/* ✅ Show image if path, emoji otherwise */}
+                    {bank.logo.startsWith("/") ? (
+                      <Image
+                        src={bank.logo}
+                        alt={bank.name}
+                        width={40}
+                        height={40}
+                        className="rounded"
+                      />
+                    ) : (
+                      <div className="text-4xl">{bank.logo}</div>
+                    )}
                     <div>
-                      <h3 className="font-semibold text-card-foreground">
-                        {bank.name}
-                      </h3>
+                      <h3 className="font-semibold text-card-foreground">{bank.name}</h3>
                       {connected && (
                         <div className="flex items-center gap-1 text-success text-sm mt-1">
                           <Check className="w-4 h-4" />
@@ -152,24 +187,23 @@ export default function ConnectPage() {
             )
           })}
 
-          {/* Add another bank card */}
-          <Card className="p-6 border-dashed">
+          {/* Add Another Bank */}
+          <Card
+            className="p-6 border-dashed cursor-pointer hover:border-primary transition-colors"
+            onClick={() => setShowAllBanks(true)}
+          >
             <div className="flex flex-col items-center justify-center gap-3 py-4">
               <div className="w-12 h-12 bg-muted rounded-full flex items-center justify-center">
                 <Plus className="w-6 h-6 text-muted-foreground" />
               </div>
-              <p className="text-sm font-medium text-muted-foreground">
-                Add Another Bank
-              </p>
-              <p className="text-xs text-muted-foreground text-center">
-                50+ more banks available
-              </p>
+              <p className="text-sm font-medium text-muted-foreground">Add Another Bank</p>
+              <p className="text-xs text-muted-foreground text-center">50+ more banks available</p>
             </div>
           </Card>
         </div>
 
         {/* Continue Button */}
-        {connectedBanks.length > 0 && (
+        {connectedBanks?.length > 0 && (
           <div className="flex justify-center">
             <Button asChild size="lg">
               <Link href="/dashboard">Continue to Dashboard</Link>
@@ -186,6 +220,84 @@ export default function ConnectPage() {
           onConnect={handleConnectionComplete}
         />
       )}
+
+      {/* All Banks Dialog */}
+      <Dialog open={showAllBanks} onOpenChange={setShowAllBanks}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-hidden flex flex-col">
+          <DialogHeader>
+            <DialogTitle>All Available Banks</DialogTitle>
+            <DialogDescription>
+              Connect to any of the {availableBanks.length} supported Nigerian financial institutions
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 flex-1 overflow-hidden flex flex-col">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input
+                placeholder="Search banks..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-9"
+              />
+            </div>
+
+            <div className="flex-1 overflow-y-auto pr-2">
+              <div className="grid gap-3">
+                {filteredBanks.map((bank) => {
+                  const connected = isConnected(bank.id)
+                  return (
+                    <Card key={bank.id} className="p-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          {bank.logo.startsWith("/") ? (
+                            <Image
+                              src={bank.logo}
+                              alt={bank.name}
+                              width={32}
+                              height={32}
+                              className="rounded"
+                            />
+                          ) : (
+                            <div className="text-2xl">{bank.logo}</div>
+                          )}
+                          <div>
+                            <h3 className="font-medium text-sm text-card-foreground">{bank.name}</h3>
+                            {connected && (
+                              <div className="flex items-center gap-1 text-success text-xs mt-0.5">
+                                <Check className="w-3 h-3" />
+                                <span>Connected</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        {connected ? (
+                          <Button
+                            onClick={() => handleRevoke(bank.id)}
+                            variant="outline"
+                            size="sm"
+                            className="text-destructive"
+                          >
+                            Revoke
+                          </Button>
+                        ) : (
+                          <Button
+                            onClick={() => handleConnect(bank.id)}
+                            variant="default"
+                            size="sm"
+                          >
+                            Connect
+                          </Button>
+                        )}
+                      </div>
+                    </Card>
+                  )
+                })}
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

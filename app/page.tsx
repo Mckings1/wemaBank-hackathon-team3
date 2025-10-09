@@ -52,7 +52,7 @@ export default function LandingPage() {
 
             <div className="flex flex-col sm:flex-row items-start gap-3 md:gap-4 mb-6 md:mb-8">
               <Button asChild size="lg" className="gap-2 w-full sm:w-auto">
-                <Link href="/signin">
+                <Link href="/register">
                   <Shield className="w-4 h-4" />
                   Connect Your Accounts
                 </Link>
@@ -356,7 +356,7 @@ export default function LandingPage() {
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 md:gap-4">
             <Button asChild size="lg" className="gap-2 w-full sm:w-auto">
-              <Link href="/signin">
+              <Link href="/register">
                 <Shield className="w-4 h-4" />
                 Get Started Free
               </Link>
