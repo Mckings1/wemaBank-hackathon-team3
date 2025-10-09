@@ -1,74 +1,48 @@
-# [Project Title]
+# TrustHub
 
-## Team Members
-- [Name 1]
-- [Name 2]
-- [Name 3]
-- [Name 4]
-- [Name 5]
+**TrustHub** is a financial transparency and trust-scoring platform built during the **Wema Bank Hackaholics 6.0 Hackathon (Lagos)**.  
+It enables individuals and businesses to build financial credibility through connected banking data, analytics, and verified insights.
 
 ---
 
-## 🚀 Live Demo
+## 🚀 Live Links
 
-*   **Live Application:** [Link to your deployed Vercel/Netlify/Render URL]
-*   **Backend API:** [Link to your live backend API endpoint URL, if separate]
-*   **Recorded Demo:** [Link to your recorded demo explaining how your solution works using Loom].
-
-
----
-
-## 🎯 The Problem
-
-*Which "How Might We..." question from the challenge brief are you tackling? Show the format by providing an example below.*
-
-> **Example:** How might we help busy people organize their daily tasks more effectively?
-
-## ✨ Our Solution
-
-*Provide a short, high-level description of your project. What is your unique idea? What does it do? How does it solve the problem?*
-
-**Example:**
-"Our project, 'TaskMaster,' is a clean and simple to-do list application. It allows users to add tasks, mark them as complete, and sort them by priority. The goal is to provide a straightforward tool to help users stay organized."
+- **Frontend (Deployed App):** [https://trusthub-six.vercel.app](https://trusthub-six.vercel.app)
+<!-- - **Backend API:** [https://trusthub-api.azurewebsites.net/api](https://trusthub-api.azurewebsites.net/api) *(if applicable)* -->
+- **Demo Video (Loom):** [https://www.loom.com/share/your-demo-link](https://www.loom.com/share/your-demo-link)
 
 ---
 
-## 🛠️ Tech Stack
+## 💡 About the Project
 
-*List the major technologies, frameworks, and platforms you used to build your project.*
+TrustHub helps users connect multiple bank accounts securely and generates a **Trust Score** using real financial patterns, spending behavior, and credit health.  
+The platform can be used by lenders, landlords, or employers to verify trustworthiness beyond traditional credit checks.
 
-*   **Frontend:** (e.g., React, Next.js, Tailwind CSS)
-*   **Backend:** (e.g., Node.js with Serverless Functions on Vercel)
-*   **Database:** (e.g., PostgreSQL via Supabase)
-*   **Deployment:** (e.g., Vercel)
-*   **AI/APIs:** (e.g., Google Gemini API)
+**Key Features**
+- 🏦 Multi-bank account integration  
+- 📊 AI-powered trust scoring  
+- 🔐 Secure KYC verification  
+- 💬 Personalized insights and recommendations  
+- 🌐 API-ready architecture for partners and fintech integrations  
 
 ---
 
-## ⚙️ How to Set Up and Run Locally (Optional)
+## 🧠 Tech Stack
 
-*Briefly explain the steps to get your project running on a local machine.*
+| Area | Technology |
+|------|-------------|
+| Frontend | React + TypeScript + TailwindCSS |
+| Backend | Node.js + Express (or Azure Functions) |
+| Database | Supabase / PostgreSQL |
+| Cloud | Azure |
+| AI | Azure OpenAI (Semantic Kernel) |
 
-**Example:**
+---
 
-1.  Clone the repository:
-    ```bash
-    git clone [your-repo-link]
-    ```
-2.  Navigate to the project directory:
-    ```bash
-    cd [project-directory]
-    ```
-3.  Install dependencies:
-    ```bash
-    npm install
-    ```
-4.  Create a `.env.local` file and add the necessary environment variables:
-    ```
-    DATABASE_URL=...
-    API_KEY=...
-    ```
-5.  Run the development server:
-    ```bash
-    npm run dev
-    ```
+## 🧰 Setup Instructions
+
+```bash
+git clone https://github.com/Wema-Hackaholics-Hackathon/wema-hackaholics6-0-hackathon-lagos-project-debanks.git
+cd trusthub
+npm install
+npm run dev
