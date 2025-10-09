@@ -40,10 +40,10 @@ The platform can be used by lenders, landlords, or employers to verify trustwort
 ---
 
 ## Team Members
-- Oluwasegun Alabi
-- Ademoye Haruna
-- Babatunde 
-- Kazeem Shaiub
+- Oluwasegun Alabi.
+- Ademoye Haruna.
+- Babatunde.
+- Kazeem Shaiub.
 
 
 ## 🧰 Setup Instructions
