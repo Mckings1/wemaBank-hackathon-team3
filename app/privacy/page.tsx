@@ -1,7 +1,11 @@
 "use client"
 
 import type React from "react"
+<<<<<<< HEAD
 import Link from "next/link"
+=======
+
+>>>>>>> 51bdc2dd82ed7f1fdc968067f48a7141ac539d54
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
@@ -155,12 +159,15 @@ export default function PrivacyPage() {
           ) : (
             <Card className="p-8 text-center">
               <p className="text-muted-foreground">No accounts connected yet</p>
+<<<<<<< HEAD
               <Button asChild size="lg" className="gap-2 w-full sm:w-auto">
                 <Link href="/connect">
                   <Shield className="w-4 h-4" />
                   Connect Your Accounts
                 </Link>
               </Button>
+=======
+>>>>>>> 51bdc2dd82ed7f1fdc968067f48a7141ac539d54
             </Card>
           )}
         </div>
