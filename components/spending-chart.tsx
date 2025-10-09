@@ -3,7 +3,6 @@
 import { Card } from "@/components/ui/card"
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts"
 
-<<<<<<< HEAD
 // ...existing code...
 const chartColors = [
   "#9e9bd2ff", // Food & Dining - Indigo
@@ -21,15 +20,6 @@ const data = [
   { name: "Entertainment", value: 28000, color: chartColors[4] },
 ]
 // ...existing code...
-=======
-const data = [
-  { name: "Food & Dining", value: 85000, color: "hsl(var(--chart-1))" },
-  { name: "Transportation", value: 45000, color: "hsl(var(--chart-2))" },
-  { name: "Shopping", value: 62000, color: "hsl(var(--chart-3))" },
-  { name: "Bills & Utilities", value: 38000, color: "hsl(var(--chart-4))" },
-  { name: "Entertainment", value: 28000, color: "hsl(var(--chart-5))" },
-]
->>>>>>> 51bdc2dd82ed7f1fdc968067f48a7141ac539d54
 
 export function SpendingChart() {
   return (
