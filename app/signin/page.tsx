@@ -1,7 +1,5 @@
 "use client"
 
-import type React from "react"
-
 import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
@@ -15,46 +13,45 @@ export default function SignInPage() {
   const [customerId, setCustomerId] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [isFaceScanning, setIsFaceScanning] = useState(false)
-  const [stream, setStream] = useState<MediaStream | null>(null)
+  const [cameraReady, setCameraReady] = useState(false)
   const [capturedImage, setCapturedImage] = useState<string | null>(null)
   const [cameraError, setCameraError] = useState<string | null>(null)
+
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const { signIn } = useAuth()
 
   useEffect(() => {
-    return () => {
-      if (stream) {
-        stream.getTracks().forEach((track) => track.stop())
-      }
-    }
-  }, [stream])
-
-  const handleCustomerIdSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (customerId.startsWith("TH-") && customerId.length >= 10) {
-      setIsLoading(true)
-      setTimeout(() => {
-        signIn(customerId)
-        setIsLoading(false)
-      }, 1000)
-    }
-  }
+    // Stop the camera if user leaves or tab changes
+    return () => stopCamera()
+  }, [])
 
   const startCamera = async () => {
     try {
       setCameraError(null)
-      const mediaStream = await navigator.mediaDevices.getUserMedia({
+      const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: "user", width: 640, height: 480 },
       })
-      setStream(mediaStream)
       if (videoRef.current) {
-        videoRef.current.srcObject = mediaStream
+        videoRef.current.srcObject = stream
+        await videoRef.current.play()
+        setCameraReady(true)
       }
     } catch (error) {
-      console.error("[v0] Camera access error:", error)
-      setCameraError("Unable to access camera. Please check permissions.")
+      console.error("Camera access error:", error)
+      setCameraError("Unable to access camera. Please allow access and refresh.")
+      setCameraReady(false)
     }
+  }
+
+  const stopCamera = () => {
+    const stream = videoRef.current?.srcObject as MediaStream
+    if (stream) {
+      stream.getTracks().forEach((track) => track.stop())
+      videoRef.current!.srcObject = null
+    }
+    setCameraReady(false)
+    setCapturedImage(null)
   }
 
   const capturePhoto = () => {
@@ -74,23 +71,13 @@ export default function SignInPage() {
     return null
   }
 
-  const handleStopCamera = () => {
-    if (stream) {
-      stream.getTracks().forEach((track) => track.stop())
-      setStream(null)
-    }
-    setCapturedImage(null)
-  }
-
   const handleFaceScan = async () => {
-    if (!stream) {
+    if (!cameraReady) {
       await startCamera()
       return
     }
 
     setIsFaceScanning(true)
-
-    // Capture the photo
     const imageData = capturePhoto()
 
     if (!imageData) {
@@ -99,21 +86,16 @@ export default function SignInPage() {
       return
     }
 
-    // Simulate face verification
+    // Simulate server-side verification delay
     await new Promise((resolve) => setTimeout(resolve, 2000))
 
-    // Stop camera stream
-    if (stream) {
-      stream.getTracks().forEach((track) => track.stop())
-      setStream(null)
-    }
+    stopCamera()
 
-    // Mock face match - in real app, this would verify against stored face data
+    // Mocked verification – replace this with backend face-match later
     const savedUser = localStorage.getItem("trusthub_user")
     if (savedUser) {
       const user = JSON.parse(savedUser)
       const identifier = user.customerId || user.bvn || user.nin
-
       if (identifier) {
         signIn(identifier)
       } else {
@@ -126,9 +108,19 @@ export default function SignInPage() {
     setIsFaceScanning(false)
   }
 
+  const handleCustomerIdSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (customerId.startsWith("TH-") && customerId.length >= 10) {
+      setIsLoading(true)
+      setTimeout(() => {
+        signIn(customerId)
+        setIsLoading(false)
+      }, 1000)
+    }
+  }
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {/* Header */}
       <header className="border-b border-border bg-white">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
@@ -143,7 +135,6 @@ export default function SignInPage() {
         </div>
       </header>
 
-      {/* Main Content */}
       <div className="flex-1 flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
@@ -158,15 +149,14 @@ export default function SignInPage() {
             <Tabs defaultValue="customerid" className="w-full">
               <TabsList className="grid w-full grid-cols-2 mb-6">
                 <TabsTrigger value="customerid" className="text-sm">
-                  <KeyRound className="w-4 h-4 mr-2" />
-                  Customer ID
+                  <KeyRound className="w-4 h-4 mr-2" /> Customer ID
                 </TabsTrigger>
                 <TabsTrigger value="facescan" className="text-sm">
-                  <Camera className="w-4 h-4 mr-2" />
-                  Face Scan
+                  <Camera className="w-4 h-4 mr-2" /> Face Scan
                 </TabsTrigger>
               </TabsList>
 
+              {/* --- Customer ID Sign-In --- */}
               <TabsContent value="customerid">
                 <form onSubmit={handleCustomerIdSubmit} className="space-y-6">
                   <div>
@@ -198,31 +188,21 @@ export default function SignInPage() {
                 </form>
               </TabsContent>
 
+              {/* --- Face Scan Sign-In --- */}
               <TabsContent value="facescan">
                 <div className="space-y-6">
                   <div className="aspect-square bg-muted rounded-lg flex items-center justify-center relative overflow-hidden">
-                    {stream && !capturedImage ? (
-                      <>
-                        <video ref={videoRef} autoPlay playsInline muted className="w-full h-full object-cover" />
-                        {isFaceScanning && (
-                          <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                            <div className="text-center text-white">
-                              <Loader2 className="w-12 h-12 animate-spin mx-auto mb-4" />
-                              <p className="text-sm">Verifying your face...</p>
-                            </div>
-                          </div>
-                        )}
-                      </>
-                    ) : capturedImage ? (
-                      <img
-                        src={capturedImage || "/placeholder.svg"}
-                        alt="Captured face"
-                        className="w-full h-full object-cover"
-                      />
-                    ) : (
-                      <div className="text-center p-6">
-                        <Camera className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-                        <p className="text-sm text-muted-foreground">Click below to start camera</p>
+                    <video ref={videoRef} autoPlay playsInline muted className="w-full h-full object-cover" />
+                    {!cameraReady && !capturedImage && (
+                      <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-white">
+                        <Camera className="w-12 h-12 mb-2 opacity-70" />
+                        <p className="text-sm">Camera not active</p>
+                      </div>
+                    )}
+                    {isFaceScanning && (
+                      <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center">
+                        <Loader2 className="w-12 h-12 animate-spin text-white mb-2" />
+                        <p className="text-white text-sm">Verifying your face...</p>
                       </div>
                     )}
                     <canvas ref={canvasRef} className="hidden" />
@@ -235,14 +215,22 @@ export default function SignInPage() {
                   )}
 
                   <div className="flex gap-2">
-                    {stream && (
-                      <Button onClick={handleStopCamera} variant="outline" size="lg" className="flex-1 bg-transparent">
-                        <X className="w-4 h-4 mr-2" />
-                        Stop Camera
+                    {cameraReady ? (
+                      <Button onClick={stopCamera} variant="outline" size="lg" className="flex-1 bg-transparent">
+                        <X className="w-4 h-4 mr-2" /> Stop Camera
+                      </Button>
+                    ) : (
+                      <Button onClick={startCamera} variant="outline" size="lg" className="flex-1 bg-transparent">
+                        <Camera className="w-4 h-4 mr-2" /> Start Camera
                       </Button>
                     )}
-                    <Button onClick={handleFaceScan} className="flex-1" size="lg" disabled={isFaceScanning}>
-                      {isFaceScanning ? "Verifying..." : stream ? "Capture & Sign In" : "Start Camera"}
+                    <Button
+                      onClick={handleFaceScan}
+                      className="flex-1"
+                      size="lg"
+                      disabled={isFaceScanning}
+                    >
+                      {isFaceScanning ? "Verifying..." : "Capture & Sign In"}
                     </Button>
                   </div>
 
