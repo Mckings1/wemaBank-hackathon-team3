@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -14,19 +14,47 @@ export default function FaceScanPage() {
   const [scanComplete, setScanComplete] = useState(false)
   const [customerId, setCustomerId] = useState("")
   const [copied, setCopied] = useState(false)
+  const [cameraReady, setCameraReady] = useState(false)
+  const [error, setError] = useState("")
+  const videoRef = useRef<HTMLVideoElement | null>(null)
+
   const router = useRouter()
   const { registerUser } = useAuth()
 
+  // Load registration data
   useEffect(() => {
-    // Load registration data from sessionStorage
     const data = sessionStorage.getItem("registration_data")
     if (data) {
       setRegistrationData(JSON.parse(data))
     } else {
-      // Redirect if no data
       setTimeout(() => router.push("/register"), 100)
     }
   }, [router])
+
+  // Initialize camera stream
+  useEffect(() => {
+    async function startCamera() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true })
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream
+          await videoRef.current.play()
+          setCameraReady(true)
+        }
+      } catch (err) {
+        console.error("Camera error:", err)
+        setError("Camera not ready. Please allow access and refresh.")
+      }
+    }
+    startCamera()
+
+    return () => {
+      if (videoRef.current && videoRef.current.srcObject) {
+        const tracks = (videoRef.current.srcObject as MediaStream).getTracks()
+        tracks.forEach((track) => track.stop())
+      }
+    }
+  }, [])
 
   const generateCustomerId = () => {
     const part1 = Math.floor(1000 + Math.random() * 9000)
@@ -35,7 +63,14 @@ export default function FaceScanPage() {
   }
 
   const handleStartScan = async () => {
+    if (!cameraReady) {
+      alert("Camera not ready. Please allow access and refresh.")
+      return
+    }
+
     setIsScanning(true)
+
+    // Simulate face scan
     await new Promise((resolve) => setTimeout(resolve, 3000))
 
     const newCustomerId = generateCustomerId()
@@ -44,12 +79,12 @@ export default function FaceScanPage() {
     const faceScanHash = `hash_${Date.now()}_${Math.random().toString(36).substring(7)}`
     const userData = {
       id: newCustomerId,
-      name: registrationData.name,
-      bvn: registrationData.bvn,
+      name: registrationData?.name,
+      bvn: registrationData?.bvn,
       customerId: newCustomerId,
       faceScanHash,
-      dateOfBirth: registrationData.dateOfBirth,
-      email: registrationData.email,
+      dateOfBirth: registrationData?.dateOfBirth,
+      email: registrationData?.email,
     }
 
     try {
@@ -71,7 +106,7 @@ export default function FaceScanPage() {
   }
 
   const handleContinue = () => {
-    router.push("/connect")
+    router.push("/register/success")
   }
 
   if (!registrationData) return null
@@ -103,16 +138,16 @@ export default function FaceScanPage() {
             {!scanComplete ? (
               <div className="space-y-6">
                 <div className="aspect-square bg-muted rounded-lg flex items-center justify-center relative overflow-hidden">
-                  {isScanning ? (
-                    <div className="text-center">
-                      <Loader2 className="w-12 h-12 text-primary animate-spin mx-auto mb-4" />
-                      <p className="text-sm text-muted-foreground">Scanning your face...</p>
-                      <p className="text-xs text-muted-foreground mt-2">Please hold still</p>
-                    </div>
-                  ) : (
-                    <div className="text-center p-6">
-                      <Camera className="w-16 h-16 text-muted-foreground mx-auto mb-4" />
-                      <p className="text-sm text-muted-foreground">Camera preview will appear here</p>
+                  <video
+                    ref={videoRef}
+                    autoPlay
+                    playsInline
+                    muted
+                    className="w-full h-full object-cover rounded-lg"
+                  />
+                  {!cameraReady && (
+                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                      <p className="text-white text-sm">{error || "Initializing camera..."}</p>
                     </div>
                   )}
                 </div>
@@ -171,7 +206,7 @@ export default function FaceScanPage() {
                 </div>
 
                 <Button onClick={handleContinue} className="w-full" size="lg">
-                  Continue to Dashboard
+                  Continue
                 </Button>
               </div>
             )}
