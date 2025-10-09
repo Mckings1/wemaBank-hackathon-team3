@@ -3,7 +3,7 @@
 import { Card } from "@/components/ui/card"
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts"
 
-// ...existing code...
+
 const chartColors = [
   "#9e9bd2ff", // Food & Dining - Indigo
   "#00C9A7", // Transportation - Teal
@@ -19,7 +19,7 @@ const data = [
   { name: "Bills & Utilities", value: 38000, color: chartColors[3] },
   { name: "Entertainment", value: 28000, color: chartColors[4] },
 ]
-// ...existing code...
+
 
 export function SpendingChart() {
   return (
@@ -35,7 +35,7 @@ export function SpendingChart() {
             outerRadius={100}
             fill="#8884d8"
             dataKey="value"
-            label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+            label={(props: { name: string; percent: number }) => `${props.name} ${(props.percent * 100).toFixed(0)}%`}
           >
             {data.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={entry.color} />
