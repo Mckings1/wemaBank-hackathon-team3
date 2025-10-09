@@ -19,7 +19,8 @@ export default function FaceScanPage() {
   const videoRef = useRef<HTMLVideoElement | null>(null)
 
   const router = useRouter()
-  const { registerUser } = useAuth()
+  // const { registerUser } = useAuth()
+  const { signIn, registerUser }: any = useAuth()
 
   // Load registration data
   useEffect(() => {
