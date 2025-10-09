@@ -31,37 +31,48 @@ export default function FaceScanPage() {
       setTimeout(() => router.push("/register"), 100)
     }
   }, [router])
-
-  // Initialize camera stream
+// Initialize camera stream
 useEffect(() => {
+  let stream: MediaStream | null = null
+  let isMounted = true
+
   async function startCamera() {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true })
-      if (videoRef.current) {
+      stream = await navigator.mediaDevices.getUserMedia({ video: true })
+      if (videoRef.current && isMounted) {
         videoRef.current.srcObject = stream
+
         videoRef.current.onloadeddata = async () => {
           try {
             await videoRef.current?.play()
-            setCameraReady(true)
+            if (isMounted) setCameraReady(true)
           } catch (err) {
-            setError("Unable to play video. Please refresh and allow camera access.")
+            console.warn("Video play interrupted:", err)
           }
         }
       }
     } catch (err) {
       console.error("Camera error:", err)
-      setError("Camera not ready. Please allow access and refresh.")
+      if (isMounted) setError("Camera not ready. Please allow access and refresh.")
     }
   }
+
   startCamera()
 
   return () => {
-    if (videoRef.current && videoRef.current.srcObject) {
-      const tracks = (videoRef.current.srcObject as MediaStream).getTracks()
-      tracks.forEach((track) => track.stop())
+    isMounted = false
+    if (stream) {
+      stream.getTracks().forEach(track => track.stop())
+      stream = null
+    }
+    if (videoRef.current) {
+      videoRef.current.onloadeddata = null
+      videoRef.current.srcObject = null
     }
   }
 }, [])
+
+
 
 
   const generateCustomerId = () => {

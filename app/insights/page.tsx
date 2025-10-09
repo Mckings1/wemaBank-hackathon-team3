@@ -1,4 +1,5 @@
 "use client"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { AlertTriangle, Sparkles, TrendingUp, ArrowRight } from "lucide-react"
@@ -14,6 +15,7 @@ export default function InsightsPage() {
       description:
         "You spent 30% more on food and dining this week compared to your average. Consider meal planning to reduce costs.",
       action: "Set Budget",
+      href: "/insights/budget",
       color: "primary",
     },
     {
@@ -24,6 +26,7 @@ export default function InsightsPage() {
       description:
         "Congratulations! You saved ₦12,000 more this month. You're on track to reach your ₦500,000 goal by June.",
       action: "View Progress",
+      href: "/insights/savings",
       color: "success",
     },
     {
@@ -34,6 +37,7 @@ export default function InsightsPage() {
       description:
         "You can save ₦10,000 monthly by automating transfers to your Piggyvest account right after salary deposits.",
       action: "Automate Savings",
+      href: "/insights/savings",
       color: "accent",
     },
     {
@@ -44,14 +48,15 @@ export default function InsightsPage() {
       description:
         "You have 3 streaming subscriptions totaling ₦8,500/month. Consider sharing family plans to save ₦4,000.",
       action: "Review Subscriptions",
+      href: "/insights/budget",
       color: "accent",
     },
   ]
 
   const quickActions = [
-    { label: "Automate Savings", icon: <TrendingUp className="w-5 h-5" /> },
-    { label: "Set Budget", icon: <Sparkles className="w-5 h-5" /> },
-    { label: "Transfer Funds", icon: <ArrowRight className="w-5 h-5" /> },
+    { label: "Automate Savings", icon: <TrendingUp className="w-5 h-5" />, href: "/insights/savings" },
+    { label: "Set Budget", icon: <Sparkles className="w-5 h-5" />, href: "/insights/budget" },
+    { label: "Transfer Funds", icon: <ArrowRight className="w-5 h-5" />, href: "/insights/transfer" },
   ]
 
   return (
@@ -74,9 +79,11 @@ export default function InsightsPage() {
         {/* Quick Actions */}
         <div className="flex flex-wrap gap-3 mb-8">
           {quickActions.map((action) => (
-            <Button key={action.label} variant="outline" className="gap-2 bg-transparent">
-              {action.icon}
-              {action.label}
+            <Button key={action.label} asChild variant="outline" className="gap-2 bg-transparent">
+              <Link href={action.href}>
+                {action.icon}
+                {action.label}
+              </Link>
             </Button>
           ))}
         </div>
@@ -100,9 +107,11 @@ export default function InsightsPage() {
                 <div className="flex-1">
                   <h3 className="text-lg font-semibold text-card-foreground mb-2">{insight.title}</h3>
                   <p className="text-muted-foreground mb-4">{insight.description}</p>
-                  <Button size="sm" variant={insight.color === "success" ? "default" : "outline"}>
-                    {insight.action}
-                    <ArrowRight className="w-4 h-4 ml-2" />
+                  <Button asChild size="sm" variant={insight.color === "success" ? "default" : "outline"}>
+                    <Link href={insight.href}>
+                      {insight.action}
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </Link>
                   </Button>
                 </div>
               </div>
