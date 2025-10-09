@@ -35,7 +35,7 @@ export function SpendingChart() {
             outerRadius={100}
             fill="#8884d8"
             dataKey="value"
-            label={(props: { name: string; percent: number }) => `${props.name} ${(props.percent * 100).toFixed(0)}%`}
+            label={(props) => `${props.name} ${props.percent ? (Number(props.percent) * 100).toFixed(0) : 0}%`}
           >
             {data.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={entry.color} />
