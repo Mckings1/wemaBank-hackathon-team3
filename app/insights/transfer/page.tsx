@@ -15,7 +15,7 @@ import { useAuth } from "@/lib/auth-context"
 import { ArrowLeft, ArrowRight, Check, Shield } from "lucide-react"
 
 export default function TransferFundsPage() {
-  const { connectedBanks } = useAuth()
+  const { connectedBanks, updateBankBalance, addTransaction } = useAuth()
   const router = useRouter()
   const [formData, setFormData] = useState({
     fromBank: "",
@@ -30,11 +30,35 @@ export default function TransferFundsPage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+
+    const amount = parseFloat(formData.amount)
+    if (!fromBankData || !toBankData) {
+      return
+    }
+    if (amount <= 0 || amount > fromBankData.balance) {
+      alert("Invalid amount. Please check your balance.")
+      return
+    }
+
     console.log("[v0] Transfer initiated:", formData)
+
+    // Update balances
+    updateBankBalance(fromBankData.id, fromBankData.balance - amount)
+    updateBankBalance(toBankData.id, toBankData.balance + amount)
+
+    // Record transaction
+    addTransaction({
+      id: Date.now().toString(),
+      merchant: `Transfer from ${fromBankData.name} to ${toBankData.name}`,
+      category: "Transfer",
+      type: "debit",
+      amount,
+      date: new Date().toISOString(),
+      note: formData.note || undefined,
+    })
+
+    // Show success UI
     setIsSubmitted(true)
-    setTimeout(() => {
-      router.push("/dashboard")
-    }, 2000)
   }
 
   if (isSubmitted) {
@@ -48,8 +72,7 @@ export default function TransferFundsPage() {
             </div>
             <h2 className="text-2xl font-bold text-foreground mb-2">Transfer Successful!</h2>
             <p className="text-muted-foreground mb-6">
-              ₦{Number.parseInt(formData.amount).toLocaleString()} has been transferred from {fromBankData?.name} to{" "}
-              {toBankData?.name}.
+              ₦{parseFloat(formData.amount).toLocaleString()} has been transferred successfully.
             </p>
             <Button asChild>
               <Link href="/dashboard">View Dashboard</Link>
@@ -65,6 +88,7 @@ export default function TransferFundsPage() {
       <AppHeader />
 
       <div className="container mx-auto px-4 py-12 max-w-2xl">
+        {/* Back Button */}
         <Button asChild variant="ghost" size="sm" className="mb-6">
           <Link href="/insights">
             <ArrowLeft className="w-4 h-4 mr-2" />
@@ -72,6 +96,7 @@ export default function TransferFundsPage() {
           </Link>
         </Button>
 
+        {/* Page Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
@@ -84,6 +109,7 @@ export default function TransferFundsPage() {
           </div>
         </div>
 
+        {/* Secure Transfer Info */}
         <Card className="p-6 mb-6 bg-success/5 border-success/20">
           <div className="flex items-start gap-3">
             <Shield className="w-5 h-5 text-success mt-0.5" />
@@ -96,8 +122,10 @@ export default function TransferFundsPage() {
           </div>
         </Card>
 
+        {/* Transfer Form */}
         <Card className="p-6">
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* From Account */}
             <div className="space-y-2">
               <Label htmlFor="fromBank">From Account</Label>
               <Select
@@ -118,6 +146,7 @@ export default function TransferFundsPage() {
               </Select>
             </div>
 
+            {/* Display Available Balance */}
             {fromBankData && (
               <Card className="p-4 bg-muted">
                 <div className="flex items-center justify-between">
@@ -129,12 +158,14 @@ export default function TransferFundsPage() {
               </Card>
             )}
 
+            {/* Arrow Icon */}
             <div className="flex justify-center">
               <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
                 <ArrowRight className="w-5 h-5 text-primary" />
               </div>
             </div>
 
+            {/* To Account */}
             <div className="space-y-2">
               <Label htmlFor="toBank">To Account</Label>
               <Select
@@ -157,6 +188,7 @@ export default function TransferFundsPage() {
               </Select>
             </div>
 
+            {/* Amount Input */}
             <div className="space-y-2">
               <Label htmlFor="amount">Amount</Label>
               <div className="relative">
@@ -174,6 +206,7 @@ export default function TransferFundsPage() {
               </div>
             </div>
 
+            {/* Note Input */}
             <div className="space-y-2">
               <Label htmlFor="note">Note (Optional)</Label>
               <Input
@@ -185,6 +218,7 @@ export default function TransferFundsPage() {
               />
             </div>
 
+            {/* Submit & Cancel Buttons */}
             <div className="pt-4 space-y-3">
               <Button
                 type="submit"
@@ -193,31 +227,13 @@ export default function TransferFundsPage() {
                 disabled={!formData.fromBank || !formData.toBank || !formData.amount}
               >
                 <ArrowRight className="w-4 h-4 mr-2" />
-                Transfer ₦{formData.amount ? Number.parseInt(formData.amount).toLocaleString() : "0"}
+                Transfer ₦{formData.amount ? Number.parseFloat(formData.amount).toLocaleString() : "0"}
               </Button>
               <Button asChild variant="outline" className="w-full bg-transparent" size="lg">
                 <Link href="/insights">Cancel</Link>
               </Button>
             </div>
           </form>
-        </Card>
-
-        <Card className="p-6 mt-6">
-          <h3 className="font-semibold text-foreground mb-4">Transfer Details</h3>
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Processing Time</span>
-              <span className="text-foreground font-medium">Instant</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Transfer Fee</span>
-              <span className="text-foreground font-medium">₦0</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">Daily Limit</span>
-              <span className="text-foreground font-medium">₦5,000,000</span>
-            </div>
-          </div>
         </Card>
       </div>
     </div>
