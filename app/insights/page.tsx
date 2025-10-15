@@ -1,11 +1,14 @@
 "use client"
+
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { AlertTriangle, Sparkles, TrendingUp, ArrowRight } from "lucide-react"
 import { AppHeader } from "@/components/app-header"
+import { FinBotChat } from "@/components/finbot-chat" // ✅ Added import for chatbot
 
 export default function InsightsPage() {
+  // ✅ List of AI insights
   const insights = [
     {
       id: 1,
@@ -53,6 +56,7 @@ export default function InsightsPage() {
     },
   ]
 
+  // ✅ Quick Actions section (shortcuts)
   const quickActions = [
     { label: "Automate Savings", icon: <TrendingUp className="w-5 h-5" />, href: "/insights/savings" },
     { label: "Set Budget", icon: <Sparkles className="w-5 h-5" />, href: "/insights/budget" },
@@ -61,9 +65,12 @@ export default function InsightsPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* App Header */}
       <AppHeader />
 
+      {/* Main Container */}
       <div className="container mx-auto px-4 py-12 max-w-5xl">
+        {/* Page Header */}
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center">
@@ -93,17 +100,20 @@ export default function InsightsPage() {
           {insights.map((insight) => (
             <Card key={insight.id} className="p-6">
               <div className="flex items-start gap-4">
+                {/* Icon Section */}
                 <div
                   className={`w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 ${
                     insight.color === "success"
                       ? "bg-success/10 text-success"
                       : insight.color === "accent"
-                        ? "bg-accent/10 text-accent"
-                        : "bg-primary/10 text-primary"
+                      ? "bg-accent/10 text-accent"
+                      : "bg-primary/10 text-primary"
                   }`}
                 >
                   {insight.icon}
                 </div>
+
+                {/* Content Section */}
                 <div className="flex-1">
                   <h3 className="text-lg font-semibold text-card-foreground mb-2">{insight.title}</h3>
                   <p className="text-muted-foreground mb-4">{insight.description}</p>
@@ -119,7 +129,7 @@ export default function InsightsPage() {
           ))}
         </div>
 
-        {/* Spending Patterns */}
+        {/* Spending Patterns Section */}
         <Card className="p-8 mt-8">
           <h2 className="text-xl font-semibold text-card-foreground mb-6">Your Spending Patterns</h2>
           <div className="grid md:grid-cols-3 gap-6">
@@ -141,7 +151,7 @@ export default function InsightsPage() {
           </div>
         </Card>
 
-        {/* AI Assistant Tip */}
+        {/* AI Assistant Tip Section */}
         <Card className="p-6 mt-8 bg-gradient-to-r from-primary/10 to-accent/10 border-primary/20">
           <div className="flex items-start gap-4">
             <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
@@ -150,13 +160,16 @@ export default function InsightsPage() {
             <div>
               <h3 className="font-semibold text-foreground mb-2">AI Assistant Tip</h3>
               <p className="text-sm text-muted-foreground">
-                Based on your spending patterns, you could save an additional ₦25,000 per month by: reducing dining out
+                Based on your spending patterns, you could save an additional ₦25,000 per month by reducing dining out
                 by 20%, switching to a cheaper mobile plan, and consolidating your subscriptions.
               </p>
             </div>
           </div>
         </Card>
       </div>
+
+      {/* ✅ FinBot Chat Widget (AI chatbot embedded at bottom) */}
+      <FinBotChat />
     </div>
   )
 }
