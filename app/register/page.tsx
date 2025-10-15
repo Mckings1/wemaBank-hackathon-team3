@@ -142,14 +142,14 @@ export default function RegisterPage() {
                   )}
                 </Button>
 
-                {/* <div className="pt-4 border-t border-border">
+                <div className="pt-4 border-t border-border">
                   <p className="text-xs text-muted-foreground text-center mb-3">Demo BVNs for testing:</p>
                   <div className="space-y-2 text-xs text-muted-foreground">
-                    <p>• 12345678901 - Adebayo Okonkwo</p>
+                    <p>• 12345678901 - Alex Johnson</p>
                     <p>• 98765432109 - Chioma Nwosu</p>
                     <p>• 11122233344 - Ibrahim Musa</p>
                   </div>
-                </div> */}
+                </div>
               </form>
             ) : (
               <div className="space-y-6">
