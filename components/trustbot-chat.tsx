@@ -153,7 +153,7 @@ function generateMockResponse(message: string, userData: any) {
   }
 }
 
-export function FinBotChat() {
+export function TrustBotChat() {
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState("")
@@ -174,7 +174,7 @@ export function FinBotChat() {
       const welcomeMessage: Message = {
         id: "welcome",
         role: "assistant",
-        content: `Hi ${user?.name || "there"}! I'm FinBot, your AI financial assistant. I've analyzed your accounts for this week. Want a quick summary or a deep dive into your finances?`,
+        content: `Hi ${user?.name || "there"}! I'm TrustBot, your AI financial assistant. I've analyzed your accounts for this week. Want a quick summary or a deep dive into your finances?`,
         timestamp: new Date(),
       }
       setMessages([welcomeMessage])
@@ -199,7 +199,7 @@ export function FinBotChat() {
     await new Promise((resolve) => setTimeout(resolve, 1000))
 
     const userData = {
-      customerId: user?.customerId,
+      // customerId: user?.customerId,
       connectedBanks: connectedBanks.length,
       totalBalance: connectedBanks.reduce((sum, bank) => sum + bank.balance, 0),
     }
@@ -247,7 +247,7 @@ export function FinBotChat() {
             <Bot className="w-5 h-5 text-primary-foreground" />
           </div>
           <div>
-            <h3 className="font-semibold text-foreground">FinBot</h3>
+            <h3 className="font-semibold text-foreground">TrustBot</h3>
             <p className="text-xs text-muted-foreground">AI Financial Assistant</p>
           </div>
         </div>
