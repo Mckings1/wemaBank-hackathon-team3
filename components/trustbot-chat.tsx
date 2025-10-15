@@ -106,7 +106,7 @@ function generateMockResponse(message: string, userData: any) {
   // Trust score
   if (lowerMessage.includes("trust") || lowerMessage.includes("score") || lowerMessage.includes("credit")) {
     return {
-      message: `Your Trust Score is 87/100 - Excellent! This score is based on your consistent savings habits, on-time payments, and responsible spending. You're in the top 15% of TrustHub users.`,
+      message: `Your Trust Score is 93/100 - Excellent! This score is based on your consistent savings habits, on-time payments, and responsible spending. You're in the top 15% of TrustHub users.`,
       chartData: [
         { name: "Jan", value: 82 },
         { name: "Feb", value: 84 },
