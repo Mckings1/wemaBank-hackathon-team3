@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { AlertTriangle, Sparkles, TrendingUp, ArrowRight } from "lucide-react"
 import { AppHeader } from "@/components/app-header"
-import { FinBotChat } from "@/components/finbot-chat" // ✅ Added import for chatbot
+import { TrustBotChat } from "@/components/trustbot-chat" // ✅ Added import for chatbot
 
 export default function InsightsPage() {
   // ✅ List of AI insights
@@ -168,8 +168,8 @@ export default function InsightsPage() {
         </Card>
       </div>
 
-      {/* ✅ FinBot Chat Widget (AI chatbot embedded at bottom) */}
-      <FinBotChat />
+      {/* ✅ TrustBot Chat Widget (AI chatbot embedded at bottom) */}
+      <TrustBotChat />
     </div>
   )
 }
